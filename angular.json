@@ -24,7 +24,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/manifest.json",
+              "src/assets",
+              "src/background",
+              "src/content"
             ],
             "styles": [
               "src/styles.css"
@@ -92,5 +96,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "7a1ef0e5-b3e3-4987-9863-2ae41017f277"
   }
 }

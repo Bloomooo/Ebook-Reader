@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Ebook Reader",
+  "version": "1.0",
+  "description": "Une extension pour lire et gérer vos ebooks",
+  "icons": {
+    "48": "assets/icon.png"
+  },
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": "assets/icon.ico"
+  },
+  "permissions": ["activeTab"],
+  "background": {
+    "scripts": ["background/background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"]
+    }
+  ]
+}
