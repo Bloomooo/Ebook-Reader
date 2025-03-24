@@ -9,6 +9,7 @@
   overflow: auto;
   padding: 0 0.1rem;
   margin-top: 0.5rem;
+  position: relative;
 }
 
 .list-item {
@@ -61,4 +62,19 @@
   font-weight: 600;
   color: #e91e63;
   margin: 0;
+}
+.button-add {
+  position: fixed;
+  bottom: 6rem;
+  right: 0.2rem;
+  z-index: 10;
+  background-color: black;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 100%;
+  padding: 0.25rem;
 }

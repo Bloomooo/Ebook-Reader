@@ -14,4 +14,10 @@
       </div>
     </div>
   }
+  <button class="button-add" (click)="downloadBook()">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>
+
+<input type="file" (change)="onEBookSelected($event)" style="display: none" #fileInput>
+
