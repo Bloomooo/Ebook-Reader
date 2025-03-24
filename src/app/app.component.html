@@ -1,5 +1,13 @@
 <div class="main">
-  <div class="header">
-    <app-header/>
+  @switch (pageType){
+    @case (PageType.HOME){
+      <app-home/>
+    }
+    @case(PageType.BIBLIOTHEQUE){
+      <app-bibliotheque/>
+    }
+  }
+  <div class="navbar">
+    <app-navbar (changePage)="changePage($event)"/>
   </div>
 </div>

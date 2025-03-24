@@ -1,0 +1,33 @@
+.navbar {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.nav-btn {
+  background-color: transparent;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn i {
+  font-size: 1.2rem;
+}

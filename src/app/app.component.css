@@ -1,4 +1,10 @@
 .main{
   display: flex;
-  background-color: black;
+  flex-direction: column;
+  background-color: white;
+  overflow: hidden;
+}
+
+.navbar{
+  margin-top: 1rem;
 }

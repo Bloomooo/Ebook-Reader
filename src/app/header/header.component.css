@@ -1,0 +1,77 @@
+.card-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 25rem;
+  padding-bottom: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 15rem;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.card-body {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-image {
+  height: 6rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  width: 100%;
+}
+
+.card-author {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.btn {
+  background-color: transparent;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card-discount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e91e63;
+  margin: 0;
+}
