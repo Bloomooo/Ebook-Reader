@@ -1,23 +1,31 @@
-<div class="bibliotheque-container">
-  @for(i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i){
-    <div class="list-item">
-      <img class="list-item-image" src="../../assets/test.jpg" alt="cover" />
-      <div class="list-item-info">
-        <h3 class="card-title">Classroom of the Elite - Volume 04.5</h3>
-        <p class="card-author">Syougo Kinugasa</p>
-        <p class="card-discount">45%</p>
-      </div>
-      <div>
-        <button class="list-item-button" mat-fab extended>
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
-    </div>
-  }
-  <button class="button-add" (click)="downloadBook()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
 
-<input type="file" (change)="onEBookSelected($event)" style="display: none" #fileInput>
+
+@if(showReader){
+  <app-reader [bookUrl]="bookUrl"></app-reader>
+}@else{
+  <div class="bibliotheque-container">
+    @for(i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i){
+      <div class="list-item">
+        <img class="list-item-image" src="../../assets/test.jpg" alt="cover" />
+        <div class="list-item-info">
+          <h3 class="card-title">Classroom of the Elite - Volume 04.5</h3>
+          <p class="card-author">Syougo Kinugasa</p>
+          <p class="card-discount">45%</p>
+        </div>
+        <div>
+          <button class="list-item-button" mat-fab extended>
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+    <button class="button-add" (click)="downloadBook()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <input type="file" (change)="onEBookSelected($event)" style="display: none" #fileInput>
+  <button (click)="openReader()">Show reader</button>
+}
+
+
 

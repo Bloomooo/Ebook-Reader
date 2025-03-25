@@ -1,0 +1,29 @@
+.epub-reader-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.epub-viewer {
+  flex-grow: 1;
+  width: 100%;
+  height: 80vh;
+}
+
+.epub-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.epub-navigation button {
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+
+.epub-navigation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

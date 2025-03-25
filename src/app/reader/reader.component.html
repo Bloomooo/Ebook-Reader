@@ -1,0 +1,52 @@
+<div class="epub-reader-container">
+  <div class="reader-layout">
+
+
+    <!-- Reader Section -->
+    <div class="reader-section">
+      <div class="book-info" *ngIf="bookMetadata">
+        <h2>{{ bookMetadata.title }}</h2>
+        <p>{{ bookMetadata.creator }}</p>
+      </div>
+
+      <div class="reader-controls">
+        <div class="theme-selector">
+          <button
+            *ngFor="let theme of themes"
+            (click)="changeTheme(theme)"
+            [ngStyle]="{
+              'background-color': theme.background,
+              'color': theme.text,
+              'border': currentTheme === theme ? '2px solid blue' : '1px solid gray'
+            }">
+            {{ theme.name }}
+          </button>
+        </div>
+
+        <div class="font-size-selector">
+          <button
+            *ngFor="let size of fontSizes"
+            (click)="changeFontSize(size)"
+            [class.active]="currentFontSize === size">
+            {{ size }}px
+          </button>
+        </div>
+      </div>
+
+      <div id="viewer" #viewer class="epub-viewer"></div>
+
+      <div class="epub-navigation">
+        <button (click)="previousPage()" class="nav-button">
+          ← Previous
+        </button>
+        <div class="page-info">
+          Page {{ currentPage }} / {{ totalPages }}
+          (Chapter {{ currentChapter }} / {{ totalChapters }})
+        </div>
+        <button (click)="nextPage()" class="nav-button">
+          Next →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
