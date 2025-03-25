@@ -1,10 +1,11 @@
 .main-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: start;
   padding: 1rem;
-  justify-content: space-evenly;
+  justify-content: start;
   position: relative;
+  gap: 1rem;
 }
 
 .card {
