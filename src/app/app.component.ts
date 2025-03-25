@@ -22,6 +22,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class AppComponent implements OnInit {
   pageType: PageType = PageType.HOME;
   protected readonly PageType = PageType;
+  bookUrl: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -30,13 +31,28 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const hash = window.location.hash.substr(1);
-    const params = new URLSearchParams(hash);
-    const pageParam = params.get('page');
+    const hashParts = hash.split('#');
+
+    let pageParam = '';
+    let bookUrlParam = '';
+
+    hashParts.forEach(part => {
+      if (part.startsWith('page=')) {
+        pageParam = part.split('=')[1];
+      } else if (part.startsWith('bookUrl=')) {
+        bookUrlParam = part.split('=')[1];
+      }
+    });
 
     if (pageParam) {
       this.setPageFromParam(pageParam);
     } else {
       window.location.hash = '#page=home';
+    }
+
+    if (bookUrlParam) {
+      this.bookUrl = bookUrlParam;
+      console.log('Book URL:', this.bookUrl);
     }
   }
 

@@ -7,6 +7,7 @@ import {BdService} from '../services/bd/bd.service';
 import {EbooksService} from '../services/ebooks/ebooks.service';
 import {AsyncPipe} from '@angular/common';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {Book} from 'epubjs';
 
 @Component({
   selector: 'app-bibliotheque',
@@ -40,7 +41,10 @@ export class BibliothequeComponent implements OnInit {
   async loadAllBooks() {
     this.isLoading = true;
     const books = await this.indexedDBService.loadAllBooks();
-    const eBooks = await Promise.all(books.map((bookData: any) => this.ebookService.createEBook(bookData)));
+    const eBooks = await Promise.all(books.map((bookData: any) => {
+      console.log(bookData);
+      return bookData.data as EBook;
+    }));
     this.eBooksSubject.next(eBooks);
     this.isLoading = false;
   }
@@ -49,7 +53,7 @@ export class BibliothequeComponent implements OnInit {
     window.open("/index.html#page=crud", "_blank");
   }
 
-  openReader(): void {
-    this.showReader = true;
+  onBookDoubleClick(book: EBook) {
+    window.open(`/index.html#page=reader#bookUrl=${encodeURIComponent(book.bookUrl)}`, "_blank");
   }
 }

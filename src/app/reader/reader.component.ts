@@ -57,9 +57,9 @@ export class ReaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadBook(url: string): void {
+  async loadBook(url: string): Promise<void> {
+    const arrayBuffer = await this.convertBlobToArrayBuffer(url);
     this.book = ePub(url);
-
     this.rendition = this.book.renderTo('viewer', {
       width: '100%',
       height: '100%',
@@ -101,6 +101,22 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
     this.book.loaded.catch((error: any) => {
       console.error('Error loading book:', error);
+    });
+  }
+
+  private convertBlobToArrayBuffer(url: string): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result as ArrayBuffer);
+          };
+          reader.onerror = () => reject(new Error('Failed to read Blob as ArrayBuffer'));
+          reader.readAsArrayBuffer(blob);
+        })
+        .catch(reject);
     });
   }
 

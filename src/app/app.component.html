@@ -7,7 +7,7 @@
       <app-bibliotheque/>
     }
     @case (PageType.READER){
-      <app-reader/>
+      <app-reader [bookUrl]="bookUrl"/>
     }
     @case (PageType.CRUD){
       <app-crud-bibliotheque/>

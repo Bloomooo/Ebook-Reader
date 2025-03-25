@@ -3,7 +3,7 @@
   flex-direction: column;
   background-color: white;
   overflow: hidden;
-  width: 26.5rem;
+  width: 100%;
 }
 
 .navbar{

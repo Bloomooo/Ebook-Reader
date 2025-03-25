@@ -17,6 +17,8 @@
   width: 100%;
   justify-content: center;
   max-height: 100%;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
 }
 
 .list-item-image {

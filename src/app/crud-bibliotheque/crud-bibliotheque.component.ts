@@ -47,23 +47,32 @@ export class CrudBibliothequeComponent implements OnInit {
 
       reader.onload = async () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.loadBook(arrayBuffer);
-        await this.indexedDBService.saveToIndexedDB(file.name, arrayBuffer);
+        await this.loadBook(arrayBuffer).then(async (ebook) => {
+          await this.indexedDBService.saveToIndexedDB(file.name, ebook as EBook);
+        });
+
       };
 
       reader.readAsArrayBuffer(file);
     }
   }
 
-  loadBook(data: ArrayBuffer): void {
-    this.ebookService.createEBook({ data }).then((ebook) => {
+  async loadBook(data: ArrayBuffer): Promise<EBook | undefined> {
+    let book: EBook | undefined;
+    await this.ebookService.createEBook({ data }).then((ebook) => {
       this.updateEBooks(ebook);
+      book = ebook;
     });
+
+    return book;
   }
 
   async loadAllBooks() {
     const books = await this.indexedDBService.loadAllBooks();
-    const eBooks = await Promise.all(books.map((bookData: any) => this.ebookService.createEBook(bookData)));
+    const eBooks = await Promise.all(books.map((bookData: any) => {
+      console.log(bookData);
+      return bookData.data as EBook;
+    }));
     this.eBooksSubject.next(eBooks);
   }
 
