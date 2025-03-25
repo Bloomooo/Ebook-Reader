@@ -1,4 +1,6 @@
 export enum PageType {
   HOME,
-  BIBLIOTHEQUE
+  BIBLIOTHEQUE,
+  READER,
+  CRUD
 }

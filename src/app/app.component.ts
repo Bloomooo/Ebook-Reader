@@ -1,22 +1,57 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PageType} from '../models/enum/page.model';
 import {HomeComponent} from './home/home.component';
 import {BibliothequeComponent} from './bibliotheque/bibliotheque.component';
 import {NavbarComponent} from './navbar/navbar.component';
+import {ReaderComponent} from './reader/reader.component';
+import {CrudBibliothequeComponent} from './crud-bibliotheque/crud-bibliotheque.component';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [
     HomeComponent,
     BibliothequeComponent,
-    NavbarComponent
+    NavbarComponent,
+    ReaderComponent,
+    CrudBibliothequeComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   pageType: PageType = PageType.HOME;
   protected readonly PageType = PageType;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const hash = window.location.hash.substr(1);
+    const params = new URLSearchParams(hash);
+    const pageParam = params.get('page');
+
+    if (pageParam) {
+      this.setPageFromParam(pageParam);
+    } else {
+      window.location.hash = '#page=home';
+    }
+  }
+
+  private setPageFromParam(pageParam: string): void {
+    const pageMap: Record<string, PageType> = {
+      'home': PageType.HOME,
+      'bibliotheque': PageType.BIBLIOTHEQUE,
+      'reader': PageType.READER,
+      'crud': PageType.CRUD
+    };
+
+    if (pageMap[pageParam]) {
+      this.pageType = pageMap[pageParam];
+    }
+  }
 
   changePage(pageType: PageType): void {
     this.pageType = pageType;

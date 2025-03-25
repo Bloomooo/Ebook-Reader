@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:watch": "nodemon --exec 'ng build -c production && cp manifest.json dist/ebook-reader/' --ext ts,html,css"
+    "build:watch": "nodemon --exec 'ng build -c production && cp manifest.json dist/ebook-reader/' --ext ts,html,css",
+    "serve:ssr:bibliotheque": "node dist/bibliotheque/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -19,16 +20,23 @@
     "@angular/material": "^19.2.6",
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
+    "@angular/platform-server": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@angular/ssr": "^19.2.4",
+    "epubjs": "^0.3.93",
+    "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "webextension-polyfill": "^0.12.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.4",
     "@angular/cli": "^19.2.4",
     "@angular/compiler-cli": "^19.2.0",
+    "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^18.18.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

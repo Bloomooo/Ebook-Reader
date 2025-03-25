@@ -6,6 +6,12 @@
     @case(PageType.BIBLIOTHEQUE){
       <app-bibliotheque/>
     }
+    @case (PageType.READER){
+      <app-reader/>
+    }
+    @case (PageType.CRUD){
+      <app-crud-bibliotheque/>
+    }
   }
   <div class="navbar">
     <app-navbar (changePage)="changePage($event)"/>

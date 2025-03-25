@@ -4,21 +4,22 @@
   "version": "1.0",
   "description": "Une extension pour lire et gérer vos ebooks",
   "icons": {
-    "48": "assets/icon.png"
+    "48": "assets/icon.ico"
   },
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "browser_action": {
     "default_popup": "index.html",
     "default_icon": "assets/icon.ico"
   },
-  "permissions": ["activeTab", "runtime"],
+  "permissions": ["activeTab", "storage"],
   "background": {
-    "scripts": ["background/background.js"],
+    "scripts": [
+      "background/background.js"
+    ],
     "persistent": false
   },
-  "content_scripts": [
-    {
-      "matches": ["moz-extension://*/index.html"],
-      "js": ["content/content.js"]
-    }
+  "web_accessible_resources": [
+    "*.js",
+    "*.css"
   ]
 }

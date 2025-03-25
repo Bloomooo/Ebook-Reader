@@ -1,0 +1,18 @@
+.card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.card-img{
+  height: 8rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
