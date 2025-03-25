@@ -1,8 +1,8 @@
 <div class="main-container">
-  @for(i of [0, 1, 2, 3, 4, 5]; track i){
+  @for(book of eBooks$ | async; track book){
     <div class="card">
       <div class="image-container">
-        <img class="card-img" src="../../assets/test.jpg" alt="cover" />
+        <img class="card-img" [src]="book.cover" alt="cover" />
         <div class="overlay">
           <div class="button-group">
             <button class="action-btn delete-btn">
@@ -14,12 +14,14 @@
         </div>
       </div>
       <div class="text-container">
-        <h3>Classroom of the Elite - Volume 04.5</h3>
-        <p>Syougo Kinugasa</p>
+        <h3>{{book.title}}</h3>
+        <p>{{book.artist}}</p>
       </div>
     </div>
   }
-  <button class="sticky-add-btn">
+  <button class="sticky-add-btn" (click)="downloadBook()">
     <mat-icon>add</mat-icon>
   </button>
+  <input type="file" accept=".epub" (change)="onEBookSelected($event)" style="display: none" #fileInput>
 </div>
+

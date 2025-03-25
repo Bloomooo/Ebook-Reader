@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   align-items: center;
   padding: 1rem;
-  justify-content: space-between;
+  justify-content: space-evenly;
   position: relative;
 }
 
