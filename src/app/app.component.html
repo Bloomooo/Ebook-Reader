@@ -13,7 +13,9 @@
       <app-crud-bibliotheque/>
     }
   }
-  <div class="navbar">
-    <app-navbar (changePage)="changePage($event)"/>
-  </div>
+  @if(pageType == PageType.HOME || pageType == PageType.BIBLIOTHEQUE){
+    <div class="navbar">
+      <app-navbar (changePage)="changePage($event)"/>
+    </div>
+  }
 </div>

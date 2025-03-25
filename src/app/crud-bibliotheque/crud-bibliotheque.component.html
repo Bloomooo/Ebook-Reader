@@ -1,10 +1,25 @@
 <div class="main-container">
-  <div class="card">
-    <img class="card-img" src="../../assets/test.jpg" alt="cover" />
-    <p>Classroom of the Elite - Volume 04.5</p>
-    <p>Syougo Kinugasa</p>
-  </div>
-  <button mat-fab extended>
+  @for(i of [0, 1, 2, 3, 4, 5]; track i){
+    <div class="card">
+      <div class="image-container">
+        <img class="card-img" src="../../assets/test.jpg" alt="cover" />
+        <div class="overlay">
+          <div class="button-group">
+            <button class="action-btn delete-btn">
+              <mat-icon>
+                delete
+              </mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="text-container">
+        <h3>Classroom of the Elite - Volume 04.5</h3>
+        <p>Syougo Kinugasa</p>
+      </div>
+    </div>
+  }
+  <button class="sticky-add-btn">
     <mat-icon>add</mat-icon>
   </button>
 </div>

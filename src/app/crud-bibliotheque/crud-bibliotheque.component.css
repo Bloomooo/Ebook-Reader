@@ -1,18 +1,119 @@
-.card{
+.main-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 1rem;
+  justify-content: space-between;
+  position: relative;
+}
+
+.card {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
-.main-container{
+.image-container:hover .card-img {
+  filter: brightness(0.5);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.card-img {
+  height: 20rem;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  transition: filter 0.3s ease;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  border-radius: 0.5rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   align-items: center;
 }
 
-.card-img{
-  height: 8rem;
-  object-fit: cover;
-  border-radius: 0.5rem;
+.button-add mat-icon {
+  font-size: 2rem;
+}
+
+.action-btn {
+  background-color: transparent;
+  color: red;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.delete-btn {
+  transform: scale(2.0);
+}
+
+.text-container {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.image-container:hover .card-img {
+  filter: brightness(0.5);
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.sticky-add-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #000;
+  color: white;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sticky-add-btn:hover {
+  transform: scale(1.5);
+}
+
+.sticky-add-btn mat-icon {
+  font-size: 2.5rem;
+  width: unset;
+  height: unset;
 }
