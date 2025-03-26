@@ -1,4 +1,5 @@
 .epub-reader-container {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -8,22 +9,60 @@
 .epub-viewer {
   flex-grow: 1;
   width: 100%;
-  height: 80vh;
+  height: 100vh;
 }
 
-.epub-navigation {
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 100%;
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}
+
+.info-container {
   display: flex;
   justify-content: space-between;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  text-align: center;
+}
+
+.menu-button{
+  background-color: transparent;
+  color: black;
+  padding: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-item-button{
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
+  gap: 0.5rem;
+  border: none;
 }
 
-.epub-navigation button {
-  padding: 5px 10px;
-  margin: 0 5px;
-}
-
-.epub-navigation button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.info-container > p {
+  margin-right: 1rem;
 }

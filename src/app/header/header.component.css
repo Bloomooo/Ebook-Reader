@@ -49,12 +49,21 @@
   color: #333;
   margin: 0;
   width: 100%;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .card-author {
   font-size: 0.875rem;
   color: #666;
   margin: 0;
+}
+.menu-button{
+  background-color: transparent;
+  color: black;
+  padding: 1rem;
+  border: none;
+  cursor: pointer;
 }
 
 .btn {

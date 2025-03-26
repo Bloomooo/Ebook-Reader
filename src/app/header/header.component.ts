@@ -1,7 +1,7 @@
 import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
 import {EBook} from '../../models/ebook.models';
-import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {BdService} from '../services/bd/bd.service';
 
 @Component({
@@ -9,7 +9,8 @@ import {BdService} from '../services/bd/bd.service';
   imports: [
     MatIcon,
     MatMenu,
-    MatMenuTrigger
+    MatMenuTrigger,
+    MatMenuItem,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'

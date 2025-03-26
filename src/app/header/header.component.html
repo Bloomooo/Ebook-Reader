@@ -17,19 +17,19 @@
             </p>
           </div>
           <div>
-            <button class="btn" mat-fab extended [matMenuTriggerFor]="menu">
+            <button class="btn" [matMenuTriggerFor]="menu">
               <mat-icon>menu</mat-icon>
             </button>
 
               <mat-menu #menu="matMenu">
                 @if(book.pourcentage !== 100){
-                  <button mat-menu-item (click)="terminateBook(book)">
+                  <button class="menu-button" mat-menu-item (click)="terminateBook(book)">
                     <mat-icon>check</mat-icon>
                     Marquer comme terminé
                   </button>
                 }@else{
-                  <button mat-menu-item (click)="terminateBook(book)">
-                    <mat-icon>check</mat-icon>
+                  <button class="menu-button" mat-menu-item (click)="terminateBook(book)">
+                    <mat-icon>clear</mat-icon>
                     Marquer comme non terminé
                   </button>
                 }

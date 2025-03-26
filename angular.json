@@ -35,7 +35,7 @@
                 "input": "public"
               },
               "src/manifest.json",
-              "src/assets",
+              "src/icons",
               "src/background",
               "src/content"
             ],
@@ -50,7 +50,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",

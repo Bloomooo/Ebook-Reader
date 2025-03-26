@@ -1,49 +1,41 @@
-<div class="epub-reader-container">
-  <div class="reader-layout">
+<div class="epub-reader-container" (mouseenter)="showNavButtons()" (mouseleave)="hideNavButtons()">
+  <div class="info-container">
+    <button class="menu-button" mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>
+        menu
+      </mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="themeMenu">
+        <mat-icon>palette</mat-icon>
+        <p>Modifier le thème</p>
+      </button>
+      <mat-menu #themeMenu="matMenu">
+        @for(theme of themes; track theme){
+          <button mat-menu-item (click)="changeTheme(theme)">{{theme.name}}</button>
+        }
+      </mat-menu>
+      <button mat-menu-item [matMenuTriggerFor]="fontSizeMenu">
+        <mat-icon>format_size</mat-icon>
+        <p>Modifier la taille du texte</p>
+      </button>
+      <mat-menu #fontSizeMenu="matMenu">
+        <button mat-menu-item (click)="changeFontSize(12)">Petit</button>
+        <button mat-menu-item (click)="changeFontSize(16)">Moyen</button>
+        <button mat-menu-item (click)="changeFontSize(20)">Grand</button>
+      </mat-menu>
+    </mat-menu>
 
-    <div class="reader-section">
-      <div class="book-info" *ngIf="bookMetadata">
-        <h2>{{ bookMetadata.title }}</h2>
-        <p>{{ bookMetadata.creator }}</p>
-      </div>
-
-      <div class="reader-controls">
-        <div class="theme-selector">
-          <button
-            *ngFor="let theme of themes"
-            (click)="changeTheme(theme)"
-            [ngStyle]="{
-              'background-color': theme.background,
-              'color': theme.text,
-              'border': currentTheme === theme ? '2px solid blue' : '1px solid gray'
-            }">
-            {{ theme.name }}
-          </button>
-        </div>
-
-        <div class="font-size-selector">
-          <button
-            *ngFor="let size of fontSizes"
-            (click)="changeFontSize(size)"
-            [class.active]="currentFontSize === size">
-            {{ size }}px
-          </button>
-        </div>
-      </div>
-
-      <div id="viewer" #viewer class="epub-viewer"></div>
-
-      <div class="epub-navigation">
-        <button (click)="previousPage()" class="nav-button">
-          ← Previous
-        </button>
-        <div class="page-info">
-          Page {{ currentPage }} / {{ totalPages }}
-        </div>
-        <button (click)="nextPage()" class="nav-button">
-          Next →
-        </button>
-      </div>
-    </div>
+    <p>{{bookMetadata.title}}</p>
+    <p>{{currentPage}}</p>
   </div>
+  <div id="viewer" #viewer class="epub-viewer"></div>
+  @if(showNav){
+    <button  id="prevButton" class="nav-button left" (click)="previousPage()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button  id="nextButton" class="nav-button right" (click)="nextPage()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  }
 </div>

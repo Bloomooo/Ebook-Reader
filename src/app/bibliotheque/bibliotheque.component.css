@@ -1,11 +1,10 @@
 .bibliotheque-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 1rem;
   width: 26.5rem;
-  height: 82vh;
+  height: 78vh;
   overflow: auto;
   margin-top: 0.5rem;
   position: relative;
@@ -73,8 +72,8 @@
 }
 .button-add {
   position: fixed;
-  bottom: 6rem;
-  right: 0.2rem;
+  bottom: 2rem;
+  right: 0.5rem;
   z-index: 10;
   background-color: black;
   color: white;

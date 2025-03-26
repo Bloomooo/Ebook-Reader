@@ -3,12 +3,14 @@ import {HeaderComponent} from "../header/header.component";
 import {NavbarComponent} from "../navbar/navbar.component";
 import {BdService} from '../services/bd/bd.service';
 import {EBook} from '../../models/ebook.models';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
-    imports: [
-        HeaderComponent
-    ],
+  imports: [
+    HeaderComponent,
+    MatProgressSpinner
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

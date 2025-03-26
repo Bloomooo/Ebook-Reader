@@ -1,8 +1,14 @@
 <div class="container">
-  <div class="header">
-    <app-header title="Continuer" [ebooks]="bookToContinue" (onUpdateBook)="updateComponent()"/>
-  </div>
-  <div>
-    <app-header title="Terminer" [ebooks]="bookFinished" (onUpdateBook)="updateComponent()"/>
-  </div>
+  @if(bookFinished.length > 0 || bookToContinue.length > 0){
+    <div class="header">
+      <app-header title="Continuer" [ebooks]="bookToContinue" (onUpdateBook)="updateComponent()"/>
+    </div>
+    <div>
+      <app-header title="Terminer" [ebooks]="bookFinished" (onUpdateBook)="updateComponent()"/>
+    </div>
+  }@else{
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 </div>

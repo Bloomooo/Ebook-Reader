@@ -4,11 +4,14 @@ import ePub from 'epubjs';
 import {EbookCommonService} from '../services/common/ebook-common.service';
 import {EBook} from '../../models/ebook.models';
 import {BdService} from '../services/bd/bd.service';
+import {MatIcon} from '@angular/material/icon';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-reader',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon, MatMenu, MatMenuTrigger, FormsModule, MatMenuItem],
   templateUrl: './reader.component.html',
   styleUrl: './reader.component.css'
 })
@@ -18,11 +21,10 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
   private book: any;
   private rendition: any;
-
   currentChapter: number = 1;
   totalChapters: number = 1;
   bookMetadata: any = null;
-
+  showNav: boolean = false;
   currentPage: number = 1;
   totalPages: number = 1;
   currentBook: EBook | null = null;
@@ -42,7 +44,6 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.addEventListener('beforeunload', this.saveBookProgressBeforeUnload.bind(this));
-
     const storedBook = localStorage.getItem('currentBook');
     if (storedBook) {
       const book: EBook = JSON.parse(storedBook);
@@ -144,13 +145,13 @@ export class ReaderComponent implements OnInit, OnDestroy {
         await this.rendition.display();
         this.currentPage = 1;
       }
-
       this.rendition.on('relocated', (location: any) => {
         if (this.book.locations) {
           const currentPageLocation = this.book.locations.locationFromCfi(location.start.cfi);
           this.currentPage = currentPageLocation || 1;
 
           this.currentChapter = this.book.spine.indexOf(location.start.index) + 1;
+
         }
       });
 
@@ -159,6 +160,14 @@ export class ReaderComponent implements OnInit, OnDestroy {
       this.currentPage = 1;
       this.totalPages = 1;
     }
+  }
+
+  showNavButtons(): void {
+    this.showNav = true;
+  }
+
+  hideNavButtons(): void {
+    this.showNav = false;
   }
 
   nextPage(): void {
@@ -180,8 +189,8 @@ export class ReaderComponent implements OnInit, OnDestroy {
     this.currentTheme = theme;
     this.rendition.themes.default({
       'body': {
-        'color': theme.text,
-        'background': theme.background
+        'color': theme .text,
+        'background': theme .background
       }
     });
   }
