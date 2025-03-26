@@ -6,7 +6,9 @@
   "icons": {
     "48": "assets/icon.ico"
   },
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' blob: data:"
+  },
   "browser_action": {
     "default_popup": "index.html",
     "default_icon": "assets/icon.ico"
@@ -19,7 +21,9 @@
     "persistent": false
   },
   "web_accessible_resources": [
-    "*.js",
-    "*.css"
+    {
+      "resources": ["*.png", "*.jpg", "*.jpeg", "*.gif", "images/*"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }

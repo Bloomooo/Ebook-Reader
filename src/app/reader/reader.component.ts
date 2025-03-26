@@ -1,6 +1,9 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import ePub from 'epubjs';
+import {EbookCommonService} from '../services/common/ebook-common.service';
+import {EBook} from '../../models/ebook.models';
+import {BdService} from '../services/bd/bd.service';
 
 interface Chapter {
   label: string;
@@ -43,11 +46,22 @@ export class ReaderComponent implements OnInit, OnDestroy {
   fontSizes = [12, 14, 16, 18, 20, 22];
   currentFontSize = 16;
 
+  private readonly dbService = inject(BdService);
+
+  private readonly ebookCommonService = inject(EbookCommonService);
+
   constructor() {}
 
   ngOnInit(): void {
-    if (this.bookUrl) {
-      this.loadBook(this.bookUrl);
+    const storedBook = localStorage.getItem('currentBook');
+    if (storedBook) {
+      const book: EBook = JSON.parse(storedBook);
+      this.dbService.findBook(book.title).then((book: EBook | null) => {
+        console.log(book);
+        if(book !== null){
+          this.loadBook(book.bookUrl as ArrayBuffer);
+        }
+      });
     }
   }
 
@@ -57,8 +71,7 @@ export class ReaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  async loadBook(url: string): Promise<void> {
-    const arrayBuffer = await this.convertBlobToArrayBuffer(url);
+  async loadBook(url : ArrayBuffer): Promise<void> {
     this.book = ePub(url);
     this.rendition = this.book.renderTo('viewer', {
       width: '100%',
@@ -101,22 +114,6 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
     this.book.loaded.catch((error: any) => {
       console.error('Error loading book:', error);
-    });
-  }
-
-  private convertBlobToArrayBuffer(url: string): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-      fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            resolve(reader.result as ArrayBuffer);
-          };
-          reader.onerror = () => reject(new Error('Failed to read Blob as ArrayBuffer'));
-          reader.readAsArrayBuffer(blob);
-        })
-        .catch(reject);
     });
   }
 
@@ -167,4 +164,91 @@ export class ReaderComponent implements OnInit, OnDestroy {
       this.rendition.display(chapter.href);
     }
   }
+
+  /**
+   * Convert various book URL types to ArrayBuffer
+   * @param bookUrl Book URL as Blob, base64 string, or ArrayBuffer
+   * @returns Promise resolving to ArrayBuffer
+   */
+  async convertToArrayBuffer(bookUrl: string | Blob | ArrayBuffer): Promise<ArrayBuffer> {
+    // If already an ArrayBuffer, return directly
+    if (bookUrl instanceof ArrayBuffer) {
+      return bookUrl;
+    }
+
+    // If it's a Blob, convert to ArrayBuffer
+    if (bookUrl instanceof Blob) {
+      return await this.blobToArrayBuffer(bookUrl);
+    }
+
+    // If it's a base64 string, convert to ArrayBuffer
+    if (bookUrl.startsWith('data:') || this.isBase64(bookUrl)) {
+      return this.base64ToArrayBuffer(this.extractBase64(bookUrl));
+    }
+
+    throw new Error('Unsupported book URL format');
+  }
+
+  /**
+   * Convert Blob to ArrayBuffer
+   * @param blob Blob to convert
+   * @returns Promise resolving to ArrayBuffer
+   */
+  private blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result instanceof ArrayBuffer) {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to convert Blob to ArrayBuffer'));
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(blob);
+    });
+  }
+
+  /**
+   * Convert base64 string to ArrayBuffer
+   * @param base64 Base64 encoded string
+   * @returns ArrayBuffer
+   */
+  private base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binary = window.atob(base64);
+    const length = binary.length;
+    const buffer = new ArrayBuffer(length);
+    const view = new Uint8Array(buffer);
+    for (let i = 0; i < length; i++) {
+      view[i] = binary.charCodeAt(i);
+    }
+    return buffer;
+  }
+
+  /**
+   * Check if a string is base64 encoded
+   * @param str String to check
+   * @returns Boolean indicating if the string is base64
+   */
+  private isBase64(str: string): boolean {
+    try {
+      return btoa(atob(str)) === str;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Extract base64 data from a data URL
+   * @param dataUrl Data URL
+   * @returns Base64 encoded string
+   */
+  private extractBase64(dataUrl: string): string {
+    // If it's a data URL, extract the base64 part
+    if (dataUrl.startsWith('data:')) {
+      return dataUrl.split(',')[1];
+    }
+    return dataUrl;
+  }
+
 }

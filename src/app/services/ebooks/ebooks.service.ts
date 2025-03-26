@@ -22,8 +22,6 @@ export class EbooksService {
           coverBlobUrl = coverHref;
         }
 
-        const bookBlob = await this.getBookBlob(bookData.data);
-        bookBlobUrl = URL.createObjectURL(bookBlob);
       } catch (error) {
         console.warn("Impossible de charger la couverture ou le fichier du livre", error);
       }
@@ -33,7 +31,7 @@ export class EbooksService {
         cover: coverBlobUrl,
         artist: metadata.creator || 'Auteur inconnu',
         pourcentage: 0,
-        bookUrl: bookBlobUrl
+        bookUrl: bookData.data
       });
     });
   }

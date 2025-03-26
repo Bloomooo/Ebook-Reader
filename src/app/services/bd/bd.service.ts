@@ -1,82 +1,147 @@
 import { Injectable } from '@angular/core';
-import {EBook} from '../../../models/ebook.models';
+import { EBook } from '../../../models/ebook.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BdService {
-
   private readonly dbName = 'EbookLibrary';
   private readonly storeName = 'books';
+  private readonly dbVersion = 2; // Increment version to force schema update
 
-  async saveToIndexedDB(fileName: string, data: EBook) {
+  /**
+   * Open IndexedDB connection with explicit object store creation
+   * @returns Promise resolving to IndexedDB database
+   */
+  private async openDatabase(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.dbVersion);
 
-    const request = indexedDB.open(this.dbName, 1);
-    request.onupgradeneeded = (event: any) => {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains(this.storeName)) {
-        db.createObjectStore(this.storeName, { keyPath: 'name' });
-      }
-    };
+      // Explicitly create object store during version change
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db = (event.target as IDBOpenDBRequest).result;
 
-    request.onsuccess = async (event: any) => {
-      const db = event.target.result;
-      const transaction = db.transaction(this.storeName, 'readwrite');
-      const store = transaction.objectStore(this.storeName);
-      store.put({ name: fileName,  data });
+        // Delete existing store if it exists to recreate
+        if (db.objectStoreNames.contains(this.storeName)) {
+          db.deleteObjectStore(this.storeName);
+        }
 
-      transaction.oncomplete = async () => {
-        console.log('Livre enregistré dans IndexedDB');
+        // Create new object store with keyPath
+        db.createObjectStore(this.storeName, {
+          keyPath: 'name',
+          autoIncrement: false
+        });
       };
 
-      transaction.onerror = () => console.error('Erreur lors de l\'enregistrement');
-    };
+      request.onsuccess = (event: Event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        resolve(db);
+      };
 
-    request.onerror = () => console.error('Erreur lors de l\'ouverture de IndexedDB');
+      request.onerror = (event: Event) => {
+        console.error('IndexedDB open error:', event);
+        reject(new Error('Failed to open IndexedDB'));
+      };
+    });
   }
 
-  async loadAllBooks() {
-    const dbName = 'EbookLibrary';
-    const storeName = 'books';
+  /**
+   * Save an eBook to IndexedDB
+   * @param fileName Name of the file
+   * @param data EBook data to save
+   */
+  async saveToIndexedDB(fileName: string, data: EBook): Promise<void> {
+    try {
+      const db = await this.openDatabase();
+      const transaction = db.transaction(this.storeName, 'readwrite');
+      const store = transaction.objectStore(this.storeName);
 
-    const request = indexedDB.open(dbName, 1);
+      return new Promise((resolve, reject) => {
+        const request = store.put({ name: fileName, data });
 
-    return new Promise<any[]>((resolve, reject) => {
-      request.onsuccess = async (event: any) => {
-        const db = event.target.result;
-        const transaction = db.transaction(storeName, 'readonly');
-        const store = transaction.objectStore(storeName);
+        request.onsuccess = () => {
+          console.log('Book saved to IndexedDB');
+          resolve();
+        };
+
+        request.onerror = (event: Event) => {
+          console.error('Error saving book:', event);
+          reject(new Error('Failed to save book'));
+        };
+      });
+    } catch (error) {
+      console.error('Database connection error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load all books from IndexedDB
+   * @returns Promise resolving to array of books
+   */
+  async loadAllBooks(): Promise<(EBook & { name: string })[]> {
+    try {
+      const db = await this.openDatabase();
+      const transaction = db.transaction(this.storeName, 'readonly');
+      const store = transaction.objectStore(this.storeName);
+
+      return new Promise((resolve, reject) => {
         const getAllRequest = store.getAll();
 
         getAllRequest.onsuccess = () => {
-          resolve(getAllRequest.result);
+          resolve(getAllRequest.result || []);
         };
 
-        getAllRequest.onerror = () => reject('Erreur lors de la récupération des livres');
-      };
-
-      request.onerror = () => reject('Erreur lors de l\'ouverture de IndexedDB');
-    });
+        getAllRequest.onerror = (event: Event) => {
+          console.error('Error retrieving books:', event);
+          reject(new Error('Failed to retrieve books'));
+        };
+      });
+    } catch (error) {
+      console.error('Database connection error:', error);
+      throw error;
+    }
   }
 
-  async findBook(title: string) {
-    const request = indexedDB.open(this.dbName, 1);
-    return new Promise<any>((resolve, reject) => {
-      request.onsuccess = async (event: any) => {
-        const db = event.target.result;
-        const transaction = db.transaction(this.storeName, 'readonly');
-        const store = transaction.objectStore(this.storeName);
-        const getRequest = store.get(title);
+  /**
+   * Find a specific book by title
+   * @param title Title of the book to find
+   * @returns Promise resolving to the book or null
+   */
+  async findBook(title: string): Promise<EBook | null> {
+    try {
+      const db = await this.openDatabase();
+      const transaction = db.transaction(this.storeName, 'readonly');
+      const store = transaction.objectStore(this.storeName);
 
-        getRequest.onsuccess = () => {
-          resolve(getRequest.result);
+      return new Promise((resolve, reject) => {
+        const request = store.openCursor();
+
+        request.onsuccess = (event: Event) => {
+          const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+
+          if (cursor) {
+            const record = cursor.value; // { name: 'mon-livre.pdf', data: { title: 'Titre du Livre', bookUrl: ... } }
+            const book = record.data as EBook;
+
+            if (book.title === title) {
+              resolve(book);
+              return;
+            }
+            cursor.continue(); // Passe à l'élément suivant
+          } else {
+            resolve(null); // Aucun livre trouvé
+          }
         };
 
-        getRequest.onerror = () => reject('Erreur lors de la récupération du livre');
-      };
-
-      request.onerror = () => reject('Erreur lors de l\'ouverture de IndexedDB');
-    });
+        request.onerror = (event: Event) => {
+          console.error('Error retrieving book:', event);
+          reject(new Error('Failed to retrieve book'));
+        };
+      });
+    } catch (error) {
+      console.error('Database connection error:', error);
+      throw error;
+    }
   }
-
 }

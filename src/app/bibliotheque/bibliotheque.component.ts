@@ -1,13 +1,13 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { ReaderComponent } from '../reader/reader.component';
-import {BehaviorSubject} from 'rxjs';
-import {EBook} from '../../models/ebook.models';
-import {BdService} from '../services/bd/bd.service';
-import {EbooksService} from '../services/ebooks/ebooks.service';
-import {AsyncPipe} from '@angular/common';
-import {MatProgressSpinner} from '@angular/material/progress-spinner';
-import {Book} from 'epubjs';
+import { BehaviorSubject } from 'rxjs';
+import { EBook } from '../../models/ebook.models';
+import { BdService } from '../services/bd/bd.service';
+import { EbooksService } from '../services/ebooks/ebooks.service';
+import { AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { EbookCommonService } from '../services/common/ebook-common.service';
 
 @Component({
   selector: 'app-bibliotheque',
@@ -33,6 +33,7 @@ export class BibliothequeComponent implements OnInit {
 
   private readonly indexedDBService = inject(BdService);
   private readonly ebookService = inject(EbooksService);
+  private readonly ebookCommonService = inject(EbookCommonService);
 
   ngOnInit() {
     this.loadAllBooks();
@@ -53,7 +54,8 @@ export class BibliothequeComponent implements OnInit {
     window.open("/index.html#page=crud", "_blank");
   }
 
-  onBookDoubleClick(book: EBook) {
-    window.open(`/index.html#page=reader#bookUrl=${encodeURIComponent(book.bookUrl)}`, "_blank");
+  async onBookDoubleClick(book: EBook) {
+    localStorage.setItem('currentBook', JSON.stringify(book));
+    window.open(`/index.html#page=reader`, "_blank");
   }
 }
