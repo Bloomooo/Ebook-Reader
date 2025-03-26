@@ -15,7 +15,6 @@ export class EbookCommonService {
   }
 
   setCurrentBook(book: EBook): void {
-    console.log(book);
     this.currentBookSubject.next(book);
   }
 }

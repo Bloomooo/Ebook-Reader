@@ -70,7 +70,6 @@ export class CrudBibliothequeComponent implements OnInit {
   async loadAllBooks() {
     const books = await this.indexedDBService.loadAllBooks();
     const eBooks = await Promise.all(books.map((bookData: any) => {
-      console.log(bookData);
       return bookData.data as EBook;
     }));
     this.eBooksSubject.next(eBooks);

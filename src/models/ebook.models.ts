@@ -4,4 +4,5 @@ export interface EBook{
   artist: string;
   pourcentage: number;
   bookUrl: ArrayBuffer | string | Blob;
+  currentPage: number;
 }

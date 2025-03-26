@@ -31,7 +31,8 @@ export class EbooksService {
         cover: coverBlobUrl,
         artist: metadata.creator || 'Auteur inconnu',
         pourcentage: 0,
-        bookUrl: bookData.data
+        bookUrl: bookData.data,
+        currentPage: 0
       });
     });
   }

@@ -5,13 +5,6 @@ import {EbookCommonService} from '../services/common/ebook-common.service';
 import {EBook} from '../../models/ebook.models';
 import {BdService} from '../services/bd/bd.service';
 
-interface Chapter {
-  label: string;
-  href: string;
-  pageStart?: number;
-  pageEnd?: number;
-}
-
 @Component({
   selector: 'app-reader',
   standalone: true,
@@ -28,14 +21,11 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
   currentChapter: number = 1;
   totalChapters: number = 1;
-  currentLocation: any = null;
   bookMetadata: any = null;
-
-  chapters: Chapter[] = [];
 
   currentPage: number = 1;
   totalPages: number = 1;
-
+  currentBook: EBook | null = null;
   themes = [
     { name: 'Default', background: '#ffffff', text: '#000000' },
     { name: 'Sepia', background: '#f4ecd8', text: '#5b4636' },
@@ -50,28 +40,63 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
   private readonly ebookCommonService = inject(EbookCommonService);
 
-  constructor() {}
-
   ngOnInit(): void {
+    window.addEventListener('beforeunload', this.saveBookProgressBeforeUnload.bind(this));
+
     const storedBook = localStorage.getItem('currentBook');
     if (storedBook) {
       const book: EBook = JSON.parse(storedBook);
       this.dbService.findBook(book.title).then((book: EBook | null) => {
-        console.log(book);
         if(book !== null){
-          this.loadBook(book.bookUrl as ArrayBuffer);
+          this.currentBook = book;
+          this.loadBook(book.bookUrl as ArrayBuffer, book);
         }
       });
     }
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', this.saveBookProgressBeforeUnload);
+
     if (this.book) {
       this.book.destroy();
     }
   }
 
-  async loadBook(url : ArrayBuffer): Promise<void> {
+  private saveBookProgressBeforeUnload(event: Event): void {
+    if (this.currentBook && this.currentPage) {
+      event.preventDefault();
+      this.saveBookProgress();
+    }
+  }
+
+  private saveBookProgress(): void {
+    if (this.currentBook && this.currentPage) {
+      const progressPercentage = Math.round((this.currentPage / this.totalPages) * 100);
+
+      const updatedBook: EBook = {
+        ...this.currentBook,
+        currentPage: this.currentPage,
+        pourcentage: progressPercentage
+      };
+
+      try {
+        localStorage.setItem('currentBook', JSON.stringify(updatedBook));
+      } catch (error) {
+        console.error('Erreur localStorage:', error);
+      }
+
+      this.dbService.updateBook(updatedBook)
+        .then(() => {
+          console.log('Progression du livre sauvegardée avec succès');
+        })
+        .catch(error => {
+          console.error('Erreur lors de la mise à jour du livre:', error);
+        });
+    }
+  }
+
+  async loadBook(url: ArrayBuffer, bookInfo: EBook): Promise<void> {
     this.book = ePub(url);
     this.rendition = this.book.renderTo('viewer', {
       width: '100%',
@@ -91,54 +116,65 @@ export class ReaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.rendition.display();
+    try {
+      await this.book.ready;
 
-    this.book.ready.then(async () => {
+      await this.book.locations.generate(1024);
+
+      this.totalPages = this.book.locations.total || 1;
+
       this.bookMetadata = this.book.package.metadata;
       this.totalChapters = this.book.spine.length;
 
-      await this.extractChapters();
+      if (bookInfo && bookInfo.currentPage > 0) {
+        const targetLocation = this.book.locations.locationFromCfi(
+          this.book.locations.cfiFromLocation(bookInfo.currentPage)
+        );
 
-      await this.book.locations.generate(1024);
-      this.totalPages = this.book.locations.total;
+        if (targetLocation) {
+          await this.rendition.display(
+            this.book.locations.cfiFromLocation(targetLocation)
+          );
+          this.currentPage = targetLocation;
+        } else {
+          await this.rendition.display();
+          this.currentPage = 1;
+        }
+      } else {
+        await this.rendition.display();
+        this.currentPage = 1;
+      }
 
       this.rendition.on('relocated', (location: any) => {
-        this.currentLocation = location;
-        this.currentChapter = this.book.spine.indexOf(location.start.index) + 1;
-
         if (this.book.locations) {
-          this.currentPage = this.book.locations.locationFromCfi(location.start.cfi);
+          const currentPageLocation = this.book.locations.locationFromCfi(location.start.cfi);
+          this.currentPage = currentPageLocation || 1;
+
+          this.currentChapter = this.book.spine.indexOf(location.start.index) + 1;
         }
       });
-    });
 
-    this.book.loaded.catch((error: any) => {
-      console.error('Error loading book:', error);
-    });
-  }
-
-  async extractChapters(): Promise<void> {
-    const navigation = await this.book.loaded.navigation;
-
-    this.chapters = navigation.toc.map((item: any, index: number) => ({
-      label: item.label.trim(),
-      href: item.href,
-      pageStart: index + 1,
-      pageEnd: index + 2
-    }));
+    } catch (error) {
+      console.error('Erreur lors du chargement du livre:', error);
+      this.currentPage = 1;
+      this.totalPages = 1;
+    }
   }
 
   nextPage(): void {
-    if (this.rendition) {
+    if (this.rendition && this.currentPage < this.totalPages) {
       this.rendition.next();
+      this.currentPage = Math.min(this.currentPage + 1, this.totalPages);
     }
   }
 
   previousPage(): void {
-    if (this.rendition) {
+    if (this.rendition && this.currentPage > 1) {
       this.rendition.prev();
+      this.currentPage = Math.max(this.currentPage - 1, 1);
     }
   }
+
 
   changeTheme(theme: any): void {
     this.currentTheme = theme;
@@ -158,97 +194,4 @@ export class ReaderComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  goToChapter(chapter: Chapter): void {
-    if (chapter.href) {
-      this.rendition.display(chapter.href);
-    }
-  }
-
-  /**
-   * Convert various book URL types to ArrayBuffer
-   * @param bookUrl Book URL as Blob, base64 string, or ArrayBuffer
-   * @returns Promise resolving to ArrayBuffer
-   */
-  async convertToArrayBuffer(bookUrl: string | Blob | ArrayBuffer): Promise<ArrayBuffer> {
-    // If already an ArrayBuffer, return directly
-    if (bookUrl instanceof ArrayBuffer) {
-      return bookUrl;
-    }
-
-    // If it's a Blob, convert to ArrayBuffer
-    if (bookUrl instanceof Blob) {
-      return await this.blobToArrayBuffer(bookUrl);
-    }
-
-    // If it's a base64 string, convert to ArrayBuffer
-    if (bookUrl.startsWith('data:') || this.isBase64(bookUrl)) {
-      return this.base64ToArrayBuffer(this.extractBase64(bookUrl));
-    }
-
-    throw new Error('Unsupported book URL format');
-  }
-
-  /**
-   * Convert Blob to ArrayBuffer
-   * @param blob Blob to convert
-   * @returns Promise resolving to ArrayBuffer
-   */
-  private blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result instanceof ArrayBuffer) {
-          resolve(reader.result);
-        } else {
-          reject(new Error('Failed to convert Blob to ArrayBuffer'));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(blob);
-    });
-  }
-
-  /**
-   * Convert base64 string to ArrayBuffer
-   * @param base64 Base64 encoded string
-   * @returns ArrayBuffer
-   */
-  private base64ToArrayBuffer(base64: string): ArrayBuffer {
-    const binary = window.atob(base64);
-    const length = binary.length;
-    const buffer = new ArrayBuffer(length);
-    const view = new Uint8Array(buffer);
-    for (let i = 0; i < length; i++) {
-      view[i] = binary.charCodeAt(i);
-    }
-    return buffer;
-  }
-
-  /**
-   * Check if a string is base64 encoded
-   * @param str String to check
-   * @returns Boolean indicating if the string is base64
-   */
-  private isBase64(str: string): boolean {
-    try {
-      return btoa(atob(str)) === str;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * Extract base64 data from a data URL
-   * @param dataUrl Data URL
-   * @returns Base64 encoded string
-   */
-  private extractBase64(dataUrl: string): string {
-    // If it's a data URL, extract the base64 part
-    if (dataUrl.startsWith('data:')) {
-      return dataUrl.split(',')[1];
-    }
-    return dataUrl;
-  }
-
 }

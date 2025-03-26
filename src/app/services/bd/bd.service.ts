@@ -121,22 +121,84 @@ export class BdService {
           const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
 
           if (cursor) {
-            const record = cursor.value; // { name: 'mon-livre.pdf', data: { title: 'Titre du Livre', bookUrl: ... } }
+            const record = cursor.value;
             const book = record.data as EBook;
 
             if (book.title === title) {
               resolve(book);
               return;
             }
-            cursor.continue(); // Passe à l'élément suivant
+            cursor.continue();
           } else {
-            resolve(null); // Aucun livre trouvé
+            resolve(null);
           }
         };
 
         request.onerror = (event: Event) => {
           console.error('Error retrieving book:', event);
           reject(new Error('Failed to retrieve book'));
+        };
+      });
+    } catch (error) {
+      console.error('Database connection error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update an existing book in IndexedDB
+   * @param book EBook to update
+   * @returns Promise resolving when update is complete
+   */
+  async updateBook(book: EBook): Promise<void> {
+    try {
+      const db = await this.openDatabase();
+      const transaction = db.transaction(this.storeName, 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      return new Promise((resolve, reject) => {
+        const request = store.openCursor();
+
+        request.onsuccess = (event: Event) => {
+          const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+
+          if (cursor) {
+            const record = cursor.value;
+            const existingBook = record.data as EBook;
+
+            if (existingBook.title === book.title) {
+              const updatedBook = {
+                ...existingBook,
+                ...book,
+                currentPage: book.currentPage ?? existingBook.currentPage,
+                pourcentage: book.pourcentage ?? existingBook.pourcentage
+              };
+              const updateRequest = cursor.update({
+                name: record.name,
+                data: updatedBook
+              });
+
+              updateRequest.onsuccess = () => {
+                console.log('Book updated in IndexedDB');
+                resolve();
+              };
+
+              updateRequest.onerror = (updateEvent: Event) => {
+                console.error('Error updating book:', updateEvent);
+                reject(new Error('Failed to update book'));
+              };
+
+              return;
+            }
+
+            cursor.continue();
+          } else {
+            reject(new Error(`Book with title ${book.title} not found`));
+          }
+        };
+
+        request.onerror = (event: Event) => {
+          console.error('Error finding book to update:', event);
+          reject(new Error('Failed to find book for update'));
         };
       });
     } catch (error) {

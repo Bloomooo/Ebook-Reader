@@ -1,8 +1,8 @@
 <div class="container">
   <div class="header">
-    <app-header title="Continuer"/>
+    <app-header title="Continuer" [ebooks]="bookToContinue" (onUpdateBook)="updateComponent()"/>
   </div>
   <div>
-    <app-header title="Terminer"/>
+    <app-header title="Terminer" [ebooks]="bookFinished" (onUpdateBook)="updateComponent()"/>
   </div>
 </div>
