@@ -6,12 +6,13 @@
   "icons": {
     "48": "assets/icon.ico"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src 'self' blob: data:;",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src 'self' blob: data: moz-extension: 'unsafe-inline';",
+
   "browser_action": {
     "default_popup": "index.html",
     "default_icon": "assets/icon.ico"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "downloads"],
   "background": {
     "scripts": [
       "background/background.js"

@@ -3,6 +3,6 @@ export interface EBook{
   cover: string;
   artist: string;
   pourcentage: number;
-  bookUrl: ArrayBuffer | string | Blob;
+  bookUrl: ArrayBuffer;
   currentPage: number;
 }
