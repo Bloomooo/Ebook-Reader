@@ -1,14 +1,12 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "name": "Ebook Reader",
   "version": "1.0",
   "description": "Une extension pour lire et gérer vos ebooks",
   "icons": {
     "48": "assets/icon.ico"
   },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src 'self' blob: data:;"
-  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src 'self' blob: data:;",
   "browser_action": {
     "default_popup": "index.html",
     "default_icon": "assets/icon.ico"
@@ -21,9 +19,10 @@
     "persistent": false
   },
   "web_accessible_resources": [
-    {
-      "resources": [".png", ".jpg", ".jpeg", ".gif", "images/*", "blob:*"],
-      "matches": ["<all_urls>"]
-    }
+    "images/*",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.gif"
   ]
 }
