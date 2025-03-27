@@ -1,27 +1,29 @@
 <div class="main-container">
-  @for(book of eBooks$ | async; track book){
-    <div class="card">
-      <div class="image-container">
-        <img class="card-img" [src]="book.cover" alt="cover" />
-        <div class="overlay">
-          <div class="button-group">
-            <button class="action-btn delete-btn">
-              <mat-icon>
-                delete
-              </mat-icon>
-            </button>
+  @if(((eBooks$ | async) ?? []).length > 0){
+    @for(book of eBooks$ | async; track book){
+      <div class="card">
+        <div class="image-container">
+          <img class="card-img" [src]="book.cover" alt="cover" />
+          <div class="overlay">
+            <div class="button-group">
+              <button class="action-btn delete-btn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
+        <div class="text-container">
+          <h3>{{book.title}}</h3>
+          <p>{{book.artist}}</p>
+        </div>
       </div>
-      <div class="text-container">
-        <h3>{{book.title}}</h3>
-        <p>{{book.artist}}</p>
-      </div>
-    </div>
+    }
+  }@else{
+    <p class="empty-message">Aucun livre disponible.</p>
   }
+
   <button class="sticky-add-btn" (click)="downloadBook()">
     <mat-icon>add</mat-icon>
   </button>
   <input type="file" accept=".epub" (change)="onEBookSelected($event)" style="display: none" #fileInput>
 </div>
-

@@ -1,25 +1,26 @@
 <div class="header">
   <h1>{{title}}</h1>
-  <div class="card-container">
-    @for(book of ebooks; track book){
-      <div class="card">
-        <div class="card-body">
-          <img class="card-image" [src]="book.cover" alt="cover" />
-          <div class="card-content">
-            <h3 class="card-title">{{book.title}}</h3>
-            <p class="card-author">{{book.artist}}</p>
-            <p class="card-discount">
-              @if(book.pourcentage == 100){
-                Terminé
-              }@else{
-                {{book.pourcentage}} %
-              }
-            </p>
-          </div>
-          <div>
-            <button class="btn" [matMenuTriggerFor]="menu">
-              <mat-icon>menu</mat-icon>
-            </button>
+  @if(ebooks !== undefined && ebooks.length > 0){
+    <div class="card-container">
+      @for(book of ebooks; track book){
+        <div class="card">
+          <div class="card-body">
+            <img class="card-image" [src]="book.cover" alt="cover" />
+            <div class="card-content">
+              <h3 class="card-title">{{book.title}}</h3>
+              <p class="card-author">{{book.artist}}</p>
+              <p class="card-discount">
+                @if(book.pourcentage == 100){
+                  Terminé
+                }@else{
+                  {{book.pourcentage}} %
+                }
+              </p>
+            </div>
+            <div>
+              <button class="btn" [matMenuTriggerFor]="menu">
+                <mat-icon>menu</mat-icon>
+              </button>
 
               <mat-menu #menu="matMenu">
                 @if(book.pourcentage !== 100){
@@ -35,9 +36,12 @@
                 }
               </mat-menu>
 
+            </div>
           </div>
         </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }@else{
+    <p>Aucun livre à afficher</p>
+  }
 </div>

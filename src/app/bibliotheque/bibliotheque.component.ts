@@ -1,6 +1,5 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { ReaderComponent } from '../reader/reader.component';
 import { BehaviorSubject } from 'rxjs';
 import { EBook } from '../../models/ebook.models';
 import { BdService } from '../services/bd/bd.service';
@@ -13,7 +12,6 @@ import { EbookCommonService } from '../services/common/ebook-common.service';
   selector: 'app-bibliotheque',
   imports: [
     MatIcon,
-    ReaderComponent,
     AsyncPipe,
     MatProgressSpinner,
   ],

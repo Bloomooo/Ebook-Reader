@@ -1,59 +1,81 @@
 # EbookReader
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.4.
+Ce projet est une extension Firefox permettant de gérer et lire des eBooks.
 
-## Development server
+## 📌 Version
 
-To start a local development server, run:
+Version actuelle : **1.0.1**
 
-```bash
-ng serve
-```
+## Environnement de développement
+- **OS** : Ubuntu 20.04.3 LTS
+- **Node.js** : 18.19.1
+- **npm** : 9.2.0
+- **Angular CLI** : 19.2.4
+- **TypeScript** : 5.7.3
+- **Firefox** : 136.0.3 (64 bits)
+- **webstorm** : 2024.3.5 
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 📦 Technologies utilisées
 
-## Code scaffolding
+- Angular CLI 19.2.4
+- TypeScript
+- HTML/CSS
+- Material Design
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 📚 Fonctionnalités
+- [x] Ajouter un eBook
+- [x] Lire un eBook
+- [x] Progression de lecture
+- [x] Sauvegarder la progression de lecture
+- [x] Marquer un eBook comme lu/non lu
 
-```bash
-ng generate component component-name
-```
+## ⚙️ Installation et exécution
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 1️⃣ Prérequis
 
-```bash
-ng generate --help
-```
+Avant d'installer et d'exécuter le projet, assure-toi d'avoir :
 
-## Building
+- **Node.js** (version 18.19.1 ou plus récente)
+- **npm** (installé avec Node.js / version 9.2.0 ou plus récente)
+- **Angular CLI**
 
-To build the project run:
+### 2️⃣ Installation
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Clone ce dépôt et installe les dépendances :
 
 ```bash
-ng e2e
+  cd EbookReader
+  npm install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### 3️⃣ Compilation automatique
 
-## Additional Resources
+Pour construire le projet en mode **watch** (compilation automatique des modifications) :
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm run build:watch
+```
+
+Cela génère les fichiers compilés dans le répertoire **`dist/`**.
+
+## 🚀 Charger l'extension sur Firefox
+
+Une fois le projet construit, voici comment l'ajouter à **Firefox** :
+
+1. Ouvrir **Firefox**.
+2. Aller à `about:debugging` dans la barre d'adresse.
+3. Cliquer sur **"Ce Firefox"** dans le menu de gauche.
+4. Cliquer sur **"Charger un module complémentaire temporaire"**.
+5. Sélectionner le fichier `manifest.json` dans le dossier **`dist/ebook-reader/browser`**.
+6. L'extension est maintenant chargée temporairement ! 🎉
+
+💡 **Remarque** : Cette méthode charge l'extension temporairement. Elle disparaîtra lorsque tu relanceras Firefox.
+
+## 📜 Licence
+
+Ce projet est sous licence **MIT**.
+
+---
+
+🚀 **EbookReader** - Une extension simple et efficace pour gérer tes eBooks !
+

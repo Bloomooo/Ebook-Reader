@@ -1,15 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {HeaderComponent} from "../header/header.component";
-import {NavbarComponent} from "../navbar/navbar.component";
 import {BdService} from '../services/bd/bd.service';
 import {EBook} from '../../models/ebook.models';
-import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
   imports: [
-    HeaderComponent,
-    MatProgressSpinner
+    HeaderComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -20,12 +17,13 @@ export class HomeComponent implements OnInit{
 
   bookToContinue: EBook[] = [];
   bookFinished: EBook[] = [];
-
+  isLoading = false;
   ngOnInit(): void {
     this.loadAllBooks();
   }
 
   async loadAllBooks(): Promise<void> {
+    this.isLoading = true;
     const books = await this.dbService.loadAllBooks();
     this.bookToContinue = await Promise.all(books.map((bookData: any) => {
       return bookData.data as EBook;
@@ -36,6 +34,7 @@ export class HomeComponent implements OnInit{
     this.bookFinished = await Promise.all(books.map((bookData: any) => {
       return bookData.data as EBook;
     }).filter(book => book.pourcentage === 100));
+    this.isLoading = false;
   }
 
   updateComponent(): void {

@@ -1,17 +1,15 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import ePub, {Book} from 'epubjs';
 import {EBook} from '../../models/ebook.models';
 import {BehaviorSubject} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {EbooksService} from '../services/ebooks/ebooks.service';
 import {BdService} from '../services/bd/bd.service';
+import {Book} from 'epubjs';
 
 @Component({
   selector: 'app-crud-bibliotheque',
   imports: [
-    MatFabButton,
     MatIcon,
     AsyncPipe
   ],

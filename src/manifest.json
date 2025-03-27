@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
   "name": "Ebook Reader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Une extension pour lire et gérer vos ebooks",
   "icons": {
-    "48": "assets/icon.png"
+    "48": "icons/icon.png"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src 'self' blob: data: moz-extension: 'unsafe-inline';",
   "browser_action": {

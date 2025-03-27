@@ -1,21 +1,26 @@
 <div class="bibliotheque-container">
   @if(!isLoading){
-    @for(book of eBooks$ | async; track book){
-      <div class="list-item" (dblclick)="onBookDoubleClick(book)">
-        <img class="list-item-image" [src]="book.cover" alt="cover" />
-        <div class="list-item-info">
-          <h3 class="card-title">{{book.title}}</h3>
-          <p class="card-author">{{book.artist}}</p>
-          <p class="card-discount">
-            @if(book.pourcentage == 100){
-              Terminé
-            }@else{
-              {{book.pourcentage}} %
-            }
-          </p>
+    @if(((eBooks$ | async) ?? []).length > 0){
+      @for(book of (eBooks$ | async) ?? []; track book){
+        <div class="list-item" (dblclick)="onBookDoubleClick(book)">
+          <img class="list-item-image" [src]="book.cover" alt="cover" />
+          <div class="list-item-info">
+            <h3 class="card-title">{{book.title}}</h3>
+            <p class="card-author">{{book.artist}}</p>
+            <p class="card-discount">
+              @if(book.pourcentage == 100){
+                Terminé
+              }@else{
+                {{book.pourcentage}} %
+              }
+            </p>
+          </div>
         </div>
-      </div>
+      }
+    }@else{
+      <p class="empty-message">Aucun livre disponible.</p>
     }
+
     <button class="button-add" (click)="showSettings()">
       <mat-icon>settings</mat-icon>
     </button>
@@ -25,4 +30,3 @@
     </div>
   }
 </div>
-
